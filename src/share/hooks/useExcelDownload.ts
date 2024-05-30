@@ -74,6 +74,7 @@ const useExcelDownload = ({
   noDataLabel,
   customParsingFunction,
 }: UseExcelDownloadProps): UseExcelDownloadResult => {
+  const DEFAULT_COL_WIDTH_SIZE = 10;
   const downloadExcelFile = async (
     workbook: ExcelJS.Workbook,
     fileName: string
@@ -128,7 +129,7 @@ const useExcelDownload = ({
           if (!excelSheet?.width) {
             sheet.getColumn(colNumber).width = cell.value
               ? cell.value.toString().length * 2
-              : 10;
+              : DEFAULT_COL_WIDTH_SIZE;
           }
 
           setDefaultHeaderCellStyle(cell);
@@ -146,7 +147,7 @@ const useExcelDownload = ({
           row.push(value.toString());
         } else if (value instanceof Object) {
           const rawData = value as Record<string, unknown>;
-          Object.keys(rawData).forEach((key) => row.push(rawData[key]));
+          Object.keys(rawData).forEach((key) => row.push(rawData[key] ?? ""));
         } else {
           row.push(value);
         }
@@ -166,9 +167,12 @@ const useExcelDownload = ({
           } else if (cell.value) {
             const valueLength = cell.value.toString().length;
             const colWidth = sheet.getColumn(colNumber).width ?? 10;
+
             sheet.getColumn(colNumber).width =
-              colWidth <= valueLength
-                ? cell.value.toString().length * 2
+              colWidth < DEFAULT_COL_WIDTH_SIZE
+                ? DEFAULT_COL_WIDTH_SIZE
+                : colWidth <= valueLength * 2
+                ? valueLength * 2
                 : colWidth;
           }
         });
