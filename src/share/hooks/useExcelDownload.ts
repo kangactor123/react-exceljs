@@ -75,6 +75,7 @@ const useExcelDownload = ({
   customParsingFunction,
 }: UseExcelDownloadProps): UseExcelDownloadResult => {
   const DEFAULT_COL_WIDTH_SIZE = 10;
+  const MAX_COL_WIDTH_SIZE = 50;
   const downloadExcelFile = async (
     workbook: ExcelJS.Workbook,
     fileName: string
@@ -168,12 +169,19 @@ const useExcelDownload = ({
             const valueLength = cell.value.toString().length;
             const colWidth = sheet.getColumn(colNumber).width ?? 10;
 
+            // Set Default Column Width
+            const adjustedWidth =
+              colWidth && colWidth > DEFAULT_COL_WIDTH_SIZE
+                ? colWidth
+                : DEFAULT_COL_WIDTH_SIZE;
+
+            // Set Column width
             sheet.getColumn(colNumber).width =
-              colWidth < DEFAULT_COL_WIDTH_SIZE
-                ? DEFAULT_COL_WIDTH_SIZE
-                : colWidth <= valueLength * 2
-                ? valueLength * 2
-                : colWidth;
+              colWidth > MAX_COL_WIDTH_SIZE
+                ? MAX_COL_WIDTH_SIZE
+                : adjustedWidth < valueLength
+                ? valueLength * 1.2
+                : adjustedWidth;
           }
         });
       });
@@ -181,8 +189,11 @@ const useExcelDownload = ({
   };
 
   const onClickDownloadExcelFile = async (excelSheetList: ExcelSheet[]) => {
-    if (!excelSheetList.length)
-      return noDataLabel ?? "데이터가 존재하지 않습니다.";
+    const isEmptyData =
+      !excelSheetList.length ||
+      excelSheetList.every(({ data }) => !data.length);
+
+    if (isEmptyData) return noDataLabel ?? "데이터가 존재하지 않습니다.";
 
     const workbook = new ExcelJS.Workbook();
 

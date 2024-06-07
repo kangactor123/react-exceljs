@@ -1,10 +1,26 @@
+import { useState } from "react";
 import useExcelDownload from "./share/hooks/useExcelDownload";
 import type { ExcelSheet } from "./share/hooks/useExcelDownload";
+
+type TestProps = {
+  onSetCount: (count: number) => void;
+};
+
+const TestComp = (props: TestProps) => {
+  const [count, setCount] = useState(0);
+
+  return <div></div>;
+};
 
 function App() {
   const { onClickDownloadExcelFile } = useExcelDownload({
     fileName: "excel_sample",
   });
+
+  // 부모 함수에서 자식 컴포넌트의 상태를 인자로 받아 사용할 수 있음
+  const handleTest = (count: number) => {
+    return count;
+  };
 
   const handleClickExcelDownload = () => {
     const excelSheet: ExcelSheet[] = [
