@@ -68,6 +68,11 @@ function App() {
           },
         ],
       },
+      {
+        sheetName: "세 번째 시트",
+        headers: ["sample"],
+        data: [[1, 2, 3, 4, 5]],
+      },
     ];
 
     onClickDownloadExcelFile(excelSheet);
