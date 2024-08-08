@@ -7,5 +7,5 @@
 <a href="https://kangs-develop.tistory.com/8" target="_blank">바로가기</a>
 
 ### useExcelDownload
-- useExeclDownload 훅은 `src/shared/hooks` 경로에서 확인할 수 있습니다.
+- useExeclDownload 훅은 `src/share/hooks` 경로에서 확인할 수 있습니다.
 - 해당 훅의 사용 예시는 `App.tsx` 파일에서 확인 가능합니다.
