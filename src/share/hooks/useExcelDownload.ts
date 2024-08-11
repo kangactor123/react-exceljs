@@ -76,6 +76,7 @@ const useExcelDownload = ({
 }: UseExcelDownloadProps): UseExcelDownloadResult => {
   const DEFAULT_COL_WIDTH_SIZE = 10;
   const MAX_COL_WIDTH_SIZE = 50;
+  const LENGTH_CORRECTION_RATIO = 1.5;
   const downloadExcelFile = async (
     workbook: ExcelJS.Workbook,
     fileName: string
@@ -128,9 +129,11 @@ const useExcelDownload = ({
         const headerRow = sheet.addRow(excelSheet.headers);
         headerRow.eachCell((cell, colNumber) => {
           if (!excelSheet?.width) {
-            sheet.getColumn(colNumber).width = cell.value
-              ? cell.value.toString().length * 2
-              : DEFAULT_COL_WIDTH_SIZE;
+            const valueLength = cell?.value?.toString().length ?? 0;
+            sheet.getColumn(colNumber).width =
+              valueLength < DEFAULT_COL_WIDTH_SIZE
+                ? DEFAULT_COL_WIDTH_SIZE
+                : valueLength * LENGTH_CORRECTION_RATIO;
           }
 
           setDefaultHeaderCellStyle(cell);
@@ -167,20 +170,21 @@ const useExcelDownload = ({
             sheet.getColumn(colNumber).width = excelSheet.width[colNumber - 1];
           } else if (cell.value) {
             const valueLength = cell.value.toString().length;
-            const colWidth = sheet.getColumn(colNumber).width ?? 10;
+            const colWidth =
+              sheet.getColumn(colNumber).width ?? DEFAULT_COL_WIDTH_SIZE;
 
             // Set Default Column Width
             const adjustedWidth =
-              colWidth && colWidth > DEFAULT_COL_WIDTH_SIZE
+              colWidth > DEFAULT_COL_WIDTH_SIZE
                 ? colWidth
                 : DEFAULT_COL_WIDTH_SIZE;
 
             // Set Column width
             sheet.getColumn(colNumber).width =
-              colWidth > MAX_COL_WIDTH_SIZE
+              adjustedWidth > MAX_COL_WIDTH_SIZE
                 ? MAX_COL_WIDTH_SIZE
-                : adjustedWidth < valueLength
-                ? valueLength * 1.2
+                : adjustedWidth < valueLength * LENGTH_CORRECTION_RATIO
+                ? valueLength * LENGTH_CORRECTION_RATIO
                 : adjustedWidth;
           }
         });
