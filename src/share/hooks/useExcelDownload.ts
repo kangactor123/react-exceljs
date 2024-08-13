@@ -1,9 +1,11 @@
 import ExcelJS from "exceljs";
+import {
+  DEFAULT_COL_WIDTH_SIZE,
+  LENGTH_CORRECTION_RATIO,
+  MAX_COL_WIDTH_SIZE,
+} from "../constants";
+import { CustomParsingFunction, ExcelSheet } from "../types/excel.type";
 import { useCallback } from "react";
-
-const DEFAULT_COL_WIDTH_SIZE = 10;
-const MAX_COL_WIDTH_SIZE = 50;
-const LENGTH_CORRECTION_RATIO = 1.5;
 
 // 기본 헤더 컬럼 스타일 정의
 const setDefaultHeaderCellStyle = (cell: ExcelJS.Cell) => {
@@ -45,24 +47,6 @@ const setDefaultDataCellStyle = (cell: ExcelJS.Cell) => {
     },
   };
 };
-
-export type ExcelSheet = {
-  sheetName: string;
-  data: unknown[];
-  titleRow?: {
-    title: string;
-    mergeCell?: string;
-    titleCellStyle?: (cell: ExcelJS.Cell) => void;
-  };
-  headers?: string[];
-  width?: number[];
-  headerCellStyle?: (cell: ExcelJS.Cell) => void;
-  dataCellStyle?: (cell: ExcelJS.Cell) => void;
-};
-
-export type CustomParsingFunction = (
-  excelSheet: ExcelSheet[]
-) => ExcelJS.Workbook;
 
 type UseExcelDownloadProps = {
   fileName: string;
