@@ -1,13 +1,15 @@
 import ExcelJS from "exceljs";
 
+export type TitleRow = {
+  title: string;
+  mergeCell?: string;
+  titleCellStyle?: (cell: ExcelJS.Cell) => void;
+};
+
 export type ExcelSheet = {
   sheetName: string;
   data: unknown[];
-  titleRow?: {
-    title: string;
-    mergeCell?: string;
-    titleCellStyle?: (cell: ExcelJS.Cell) => void;
-  };
+  titleRow?: TitleRow;
   headers?: string[];
   width?: number[];
   headerCellStyle?: (cell: ExcelJS.Cell) => void;
