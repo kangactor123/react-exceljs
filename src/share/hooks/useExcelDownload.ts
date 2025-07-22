@@ -169,12 +169,9 @@ const useExcelDownload = ({
         row.push(value.toString());
       } else if (value instanceof Object) {
         const rawData = value as Record<string, unknown>;
-        const orderedKeys = excelSheet.headers ?? Object.keys(rawData);
-        orderedKeys.forEach((key) => {
-          row.push(rawData[key] ?? "");
-        });
+        Object.keys(rawData).forEach((key) => row.push(rawData[key] ?? ""));
       } else {
-        row.push(value);
+        row.push(value ?? "");
       }
 
       const appendRow = sheet.addRow(row);
